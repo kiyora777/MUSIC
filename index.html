@@ -5,51 +5,39 @@
     <title>My Playlist</title>
     <style>
         body { background: #000; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        #song-title { margin-bottom: 20px; font-size: 1.2rem; color: #aaa; }
-        audio { filter: invert(1); width: 300px; }
-        .status { margin-top: 20px; font-size: 0.8rem; color: #444; }
+        .container { text-align: center; border: 1px solid #333; padding: 30px; border-radius: 15px; }
+        h2 { color: #888; font-size: 16px; margin-bottom: 20px; }
+        audio { filter: invert(1); width: 320px; margin: 10px 0; }
+        .song-name { font-size: 14px; color: #555; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="song-title">준비 중...</div>
-    <audio id="player" controls></audio>
-    <div class="status">화면을 클릭하면 재생이 시작됩니다.</div>
+    <div class="container">
+        <h2>MY PRIVATE PLAYLIST</h2>
+        
+        <div class="song-item">
+            <audio id="audio1" src="music1.mp3" controls></audio>
+            <div class="song-name">Track 01. music1.mp3</div>
+        </div>
+
+        <div class="song-item">
+            <audio id="audio2" src="music2.mp3" controls></audio>
+            <div class="song-name">Track 02. music2.mp3</div>
+        </div>
+    </div>
 
     <script>
-        const playlist = [
-            { title: "노래 1번", src: "music1.mp3" },
-            { title: "노래 2번", src: "music2.mp3" }
-        ];
+        // 첫 번째 노래가 끝나면 두 번째 노래를 자동으로 틀어주는 최소한의 기능
+        const a1 = document.getElementById('audio1');
+        const a2 = document.getElementById('audio2');
 
-        let currentIndex = 0;
-        const player = document.getElementById('player');
-        const titleDisplay = document.getElementById('song-title');
-
-        function loadSong(index) {
-            const song = playlist[index];
-            player.src = song.src;
-            titleDisplay.innerText = "재생 중: " + song.title;
-            player.play().catch(e => {
-                console.log("브라우저 차단: 클릭이 필요합니다.");
-            });
-        }
-
-        // 페이지 어디든 클릭하면 첫 곡 재생
-        window.addEventListener('click', () => {
-            if (!player.src || player.src === "") {
-                loadSong(currentIndex);
-            }
-        }, { once: true });
-
-        // 곡 끝나면 다음 곡으로
-        player.onended = () => {
-            currentIndex = (currentIndex + 1) % playlist.length;
-            loadSong(currentIndex);
+        a1.onended = function() {
+            a2.play();
         };
-
-        // 초기 안내
-        titleDisplay.innerText = "클릭해서 재생 시작";
+        a2.onended = function() {
+            a1.play(); // 다시 1번으로 (무한 반복)
+        };
     </script>
 </body>
 </html>
